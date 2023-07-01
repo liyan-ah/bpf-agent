@@ -1,0 +1,2 @@
+[workspace]
+members = ["bpf-agent", "bpf-agent-common", "xtask"]
