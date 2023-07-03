@@ -73,7 +73,8 @@ async fn main() -> Result<(), anyhow::Error> {
                         continue;
                     }
                     let name = &body[0];
-                    info!("get name: {:?}", name);
+                    let name_slice = name.name[0..name.name_length];
+                    info!("get name: {:?}", String::from(name_slice));
                 }
             }
         });

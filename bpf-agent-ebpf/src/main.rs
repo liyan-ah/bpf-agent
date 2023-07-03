@@ -24,7 +24,10 @@ fn try_bpf_agent(ctx: ProbeContext) -> Result<u32, u32> {
         unsafe { helpers::bpf_probe_read_user(name_addr as *const [u8; 200]) };
     match name {
         Ok(v) => {
-            let name_event = Name { name: v.clone() };
+            let name_event = Name {
+                name: v.clone(),
+                name_length,
+            };
             unsafe { event::EVENTS.output(&ctx, &name_event, 0) };
         }
         Err(_) => {
