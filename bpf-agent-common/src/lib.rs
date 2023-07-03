@@ -1,4 +1,5 @@
 #![no_std]
-use aya_bpf::programs::ProbeContext;
 
-fn sarg(ctx: ProbeContext, ) {}
+pub struct Name {
+    pub name: [u8; 200],
+}

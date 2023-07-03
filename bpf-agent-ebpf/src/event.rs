@@ -1,8 +1,5 @@
-use aya_bpf::{maps::PerfEventArray, macros::map};
-
-pub struct Name {
-    pub name: [u8; 200],
-}
+use aya_bpf::{macros::map, maps::PerfEventArray};
+use bpf_agent_common::Name;
 
 #[map(name = "EVENTS")]
 pub static mut EVENTS: PerfEventArray<Name> =
