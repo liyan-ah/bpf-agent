@@ -4,9 +4,10 @@ use aya::util::online_cpus;
 use aya::{include_bytes_aligned, Bpf};
 use aya_log::BpfLogger;
 use bpf_agent_common::Name;
+use bytes::BytesMut;
 use clap::Parser;
 use log::{info, warn};
-use tokio::signal;
+use tokio::{signal, task};
 
 #[derive(Debug, Parser)]
 struct Opt {
@@ -53,7 +54,7 @@ async fn main() -> Result<(), anyhow::Error> {
     let program: &mut UProbe =
         bpf.program_mut("bpf_agent").unwrap().try_into()?;
     program.load()?;
-    program.attach(opt.sym, 0, opt.exe, opt.pid)?;
+    program.attach(opt.sym.as_deref(), 0, opt.exe, opt.pid)?;
 
     let mut perf_array = AsyncPerfEventArray::try_from(bpf.map_mut("EVENTS")?)?;
     for cpu_id in online_cpus()? {
