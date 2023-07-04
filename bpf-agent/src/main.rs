@@ -56,7 +56,8 @@ async fn main() -> Result<(), anyhow::Error> {
     program.load()?;
     program.attach(opt.sym.as_deref(), 0, opt.exe, opt.pid)?;
 
-    let mut perf_array = AsyncPerfEventArray::try_from(bpf.take_map("EVENTS").unwrap())?;
+    let mut perf_array =
+        AsyncPerfEventArray::try_from(bpf.take_map("EVENTS").unwrap())?;
     for cpu_id in online_cpus()? {
         let mut buf = perf_array.open(cpu_id, None)?;
 
@@ -68,14 +69,11 @@ async fn main() -> Result<(), anyhow::Error> {
             loop {
                 let events = buf.read_events(&mut buffers).await.unwrap();
                 for buf in buffers.iter_mut().take(events.read) {
-                    let (head, body, _tail) = unsafe { buf.align_to::<Name>() };
-                    if head.is_empty() {
-                        info!("name transed to buffer failed, buf: {:?}", buf);
-                        continue;
-                    }
-                    let name = &body[0];
-                    let name_slice = &name.name[0..name.name_length as usize];
-                    info!("get name: {:?}", String::from_utf8(name_slice.to_vec()));
+                    let name: Name =
+                        unsafe { std::ptr::read(buf.as_ptr() as *const _) };
+                    let n_buf = &name.name[0..name.name_length as usize];
+                    println!("name v is: {:?}", String::from_utf8(n_buf.to_vec()));
+                    println!("{:?}", n_buf);
                 }
             }
         });
