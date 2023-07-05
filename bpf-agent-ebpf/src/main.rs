@@ -18,19 +18,35 @@ pub fn bpf_agent(ctx: ProbeContext) -> u32 {
 
 fn try_bpf_agent(ctx: ProbeContext) -> Result<u32, u32> {
     info!(&ctx, "function getaddrinfo called by /home/odin/pdliyan");
-    let name_addr: u64 =
-        unsafe { ((*ctx.regs).rsp + 8 * 1) as *const [u8; 128] as _ };
-    let name_length: u64 =
-        unsafe { ((*ctx.regs).rsp + 8 * 2) as *const c_long as _ };
-    info!(&ctx, "rsp: {}", (*ctx.regs).rsp);
-    info!(&ctx, "name_length, {}", name_length);
+    let name_addr: u64 = unsafe { (*ctx.regs).rsp + 8 * 1 };
+    let name_length_addr: u64 = unsafe { (*ctx.regs).rsp + 8 * 2 };
+
+    //0. read name.addr
+    let name_addr: Result<u64, c_long> =
+        unsafe { helpers::bpf_probe_read_user(name_addr as *const u64) };
+    if let Err(_) = name_addr {
+        return Ok(0);
+    }
+    let addr = name_addr.unwrap();
+
+    //1. read name.length
+    let name_length: Result<u64, c_long> =
+        unsafe { helpers::bpf_probe_read_user(name_length_addr as *const u64) };
+    if let Err(_) = name_length {
+        return Ok(0);
+    }
+    let length = name_length.unwrap();
+
+    //2. read name
     let name: Result<[u8; 128], c_long> =
-        unsafe { helpers::bpf_probe_read_user(name_addr as *const [u8; 128]) };
+        unsafe { helpers::bpf_probe_read_user(addr as *const [u8; 128]) };
     match name {
         Ok(v) => {
+            info!(&ctx, "name: {} {}", v[0], v[1]);
+            info!(&ctx, "length, {}", length);
             let name_event = Name {
                 name: v,
-                name_length,
+                name_length: length,
             };
             unsafe { event::EVENTS.output(&ctx, &name_event, 0) };
         }
@@ -38,6 +54,7 @@ fn try_bpf_agent(ctx: ProbeContext) -> Result<u32, u32> {
             return Ok(0);
         }
     }
+
     Ok(0)
 }
 
