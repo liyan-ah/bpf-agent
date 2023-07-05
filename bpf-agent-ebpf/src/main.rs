@@ -18,8 +18,10 @@ pub fn bpf_agent(ctx: ProbeContext) -> u32 {
 
 fn try_bpf_agent(ctx: ProbeContext) -> Result<u32, u32> {
     info!(&ctx, "function getaddrinfo called by /home/odin/pdliyan");
-    let name_addr: u64 = ((*ctx.regs).rsp + 8 * 1) as *const [u8; 128] as _;
-    let name_length: u64 = ((*ctx.regs).rsp + 8 * 2) as *const c_long as _;
+    let name_addr: u64 =
+        unsafe { ((*ctx.regs).rsp + 8 * 1) as *const [u8; 128] as _ };
+    let name_length: u64 =
+        unsafe { ((*ctx.regs).rsp + 8 * 2) as *const c_long as _ };
     let name: Result<[u8; 128], c_long> =
         unsafe { helpers::bpf_probe_read_user(name_addr as *const [u8; 128]) };
     match name {
