@@ -29,6 +29,9 @@ fn try_bpf_agent(ctx: ProbeContext) -> Result<u32, u32> {
     }
     let addr = name_addr.unwrap();
 
+    let addr_: u64 = ctx.stack_arg(0).ok_or(1u32)?;
+    info!(&ctx, "addr_ value is: {}, addr value is: {}", addr_, addr);
+
     //1. read name.length
     let name_length: Result<u64, c_long> =
         unsafe { helpers::bpf_probe_read_user(name_length_addr as *const u64) };

@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-aya-bpf = { git = "https://github.com/aya-rs/aya", branch = "main" }
+aya-bpf = { git = "https://github.com/liyan-ah/aya", rev = "2ac74ebfd367e6f979c2104140a6ea3565e98991" }
 aya-log-ebpf = { git = "https://github.com/aya-rs/aya", branch = "main" }
 bpf-agent-common = { path = "../bpf-agent-common" }
 
