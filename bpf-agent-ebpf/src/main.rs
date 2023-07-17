@@ -17,7 +17,7 @@ pub fn bpf_agent(ctx: ProbeContext) -> u32 {
 }
 
 fn try_bpf_agent(ctx: ProbeContext) -> Result<u32, u32> {
-    info!(&ctx, "function getaddrinfo called by /home/odin/pdliyan");
+    info!(&ctx, "function getaddrinfo called by user");
     let name_addr: u64 = unsafe { (*ctx.regs).rsp + 8 * 1 };
     let name_length_addr: u64 = unsafe { (*ctx.regs).rsp + 8 * 2 };
 
