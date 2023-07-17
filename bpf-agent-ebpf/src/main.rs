@@ -18,6 +18,18 @@ pub fn bpf_agent(ctx: ProbeContext) -> u32 {
 
 fn try_bpf_agent(ctx: ProbeContext) -> Result<u32, u32> {
     info!(&ctx, "function getaddrinfo called by user");
+
+    let a_0: u64 = ctx.arg(0).ok_or(1u32)?;
+    let a_1: u64 = ctx.arg(1).ok_or(1u32)?;
+    let a_2: u64 = ctx.arg(2).ok_or(1u32)?;
+    let a_3: u64 = ctx.arg(3).ok_or(1u32)?;
+    let a_4: u64 = ctx.arg(4).ok_or(1u32)?;
+    let a_5: u64 = ctx.arg(5).ok_or(1u32)?;
+    info!(
+        &ctx,
+        "0-5: {}, {}, {}, {}, {}, {}", a_0, a_1, a_2, a_3, a_4, a_5
+    );
+
     let name_addr: u64 = unsafe { (*ctx.regs).rsp + 8 * 1 };
     let name_length_addr: u64 = unsafe { (*ctx.regs).rsp + 8 * 2 };
 
