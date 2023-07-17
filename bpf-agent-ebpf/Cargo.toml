@@ -4,8 +4,8 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-aya-bpf = { git = "https://github.com/liyan-ah/aya", rev = "2bec904a3c2239cb8de1bc33a590a50f1a664f58" }
-aya-log-ebpf = { git = "https://github.com/liyan-ah/aya", rev = "2bec904a3c2239cb8de1bc33a590a50f1a664f58" }
+aya-bpf = { git = "https://github.com/liyan-ah/aya", rev = "76a836639a07852dae8f2096c0dc06ddfc784434" }
+aya-log-ebpf = { git = "https://github.com/liyan-ah/aya", rev = "76a836639a07852dae8f2096c0dc06ddfc784434" }
 bpf-agent-common = { path = "../bpf-agent-common" }
 
 [[bin]]
